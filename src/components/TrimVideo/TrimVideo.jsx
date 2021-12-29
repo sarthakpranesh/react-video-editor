@@ -8,12 +8,13 @@ const TrimVideo = ({ videoSrc, setVideoSrc }) => {
     const [video, state, controls, ref] = useVideo(
         <video style={styles.video} src="" autoPlay controls />
     );
-    const [videoFile, setVideoFile] = React.useState(videoSrc);
+    const [videoFile, setVideoFile] = React.useState(videoSrc ? new File([videoSrc], "video.webm") : null);
     const [trim, setTrim] = React.useState({ start: 0, end: 0 });
     const [isTrimming, setIsTrimming] = React.useState(false);
 
     const onTrim = async () => {
         setIsTrimming(true);
+        console.log(videoFile);
         await trimVideo(videoFile, trim.start, trim.end, function (e) {
           const video = e.result;
           setVideoSrc(URL.createObjectURL(video));

@@ -7,6 +7,7 @@ const CreateVideo = ({ setVideoSrc }) => {
     const [capturing, setCapturing] = React.useState(false);
     const [recordedChunks, setRecordedChunks] = React.useState([]);
     const [userFacingMode, setUserFacingMode] = React.useState(false);
+    const [time, setTime] = React.useState(0);
   
     const handleStartCaptureClick = () => {
         setCapturing(true);
@@ -18,6 +19,9 @@ const CreateVideo = ({ setVideoSrc }) => {
           handleDataAvailable
         );
         mediaRecorderRef.current.start();
+        setInterval(() => {
+            setTime((t) => t + 1);
+        }, 1000);
     }
   
     const handleDataAvailable = ({ data }) => {
@@ -27,6 +31,8 @@ const CreateVideo = ({ setVideoSrc }) => {
     }
   
     const handleStopCaptureClick = () => {
+        clearInterval();
+        setTime(0);
         mediaRecorderRef.current.stop();
         if (recordedChunks.length) {
           const blob = new Blob(recordedChunks, {
@@ -63,7 +69,9 @@ const CreateVideo = ({ setVideoSrc }) => {
                             handleStartCaptureClick()
                         }
                     }} 
-                />
+                >
+                    {capturing ? time : ""}
+                </div>
                 <div style={{ color: "white" }} onClick={() => setUserFacingMode(!userFacingMode)}>
                     Flip
                 </div>
@@ -91,6 +99,11 @@ const styles = {
         height: 50,
         border: "4px white solid",
         borderRadius: 25,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        color: "white",
     }
 };
 
