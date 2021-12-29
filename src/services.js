@@ -26,3 +26,17 @@ export const trimVideo = async (file, start, end, callback) => {
         callback,
     )
 }
+
+
+function readFileAsBufferArray(file) {
+    return new Promise((resolve, reject) => {
+      let fileReader = new FileReader();
+      fileReader.onload = function () {
+        resolve(this.result);
+      };
+      fileReader.onerror = function () {
+        reject(this.error);
+      };
+      fileReader.readAsArrayBuffer(file);
+    });
+}

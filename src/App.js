@@ -9,6 +9,23 @@ const App = () => {
   const [type, setType] = React.useState(null); // type: null | "record" | "pick"
   const [videoSrc, setVideoSrc] = React.useState(null);
 
+  React.useEffect(() => {
+    const ffmpeg = require("ffmpeg.js");
+    let stdout = "";
+    let stderr = "";
+    // Print FFmpeg's version.
+    ffmpeg({
+      arguments: ["-version"],
+      print: function(data) { stdout += data + "\n"; },
+      printErr: function(data) { stderr += data + "\n"; },
+      onExit: function(code) {
+        console.log("Process exited with code " + code);
+        console.log(stdout);
+        console.log(stderr);
+      },
+    });
+  }, []);
+
   if (type === null) {
     return (
       <div style={styles.mainDivAppWrapper}>
