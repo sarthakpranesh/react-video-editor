@@ -3,7 +3,7 @@ import FFMPEG from "react-ffmpeg";
 export const convertVideoFromWebmToMp4 = async (file, callback) => {
     await FFMPEG.process(
         file,
-        '-fflags +genpts -r 24', //-fflags +genpts -i 1.webm -r 24 1.mp4
+        '-fflags +genpts -r 24 1.webm 1.mp4', //-fflags +genpts -i 1.webm -r 24 1.mp4
         callback,
     )
 }
