@@ -1,14 +1,15 @@
 import * as React from "react";
 import { useVideo } from "react-use";
 
-import { trimVideo, convertVideoFromWebmToMp4 } from "../../services";
+import { trimVideo } from "../../services";
 
 const TrimVideo = ({ videoSrc, setVideoSrc }) => {
     const inputRef = React.useRef();
+    // eslint-disable-next-line no-unused-vars
     const [video, state, controls, ref] = useVideo(
         <video style={styles.video} src="" autoPlay controls />
     );
-    const [videoFile, setVideoFile] = React.useState(videoSrc ? new File([videoSrc], "video.webm") : null);
+    const [videoFile, setVideoFile] = React.useState(videoSrc ? new File([videoSrc], "video.webm", { type: "video/webm" }) : null);
     const [trim, setTrim] = React.useState({ start: 0, end: 0 });
     const [isTrimming, setIsTrimming] = React.useState(false);
 
@@ -38,7 +39,7 @@ const TrimVideo = ({ videoSrc, setVideoSrc }) => {
     }, [inputRef, videoSrc]);
 
     React.useEffect(() => {
-        if (ref.current === null) {
+        if (!ref.current) {
           return;
         }
         ref.current.src = videoSrc;
@@ -47,13 +48,6 @@ const TrimVideo = ({ videoSrc, setVideoSrc }) => {
           end: Math.floor(state.duration),
         })
     }, [ref, state.duration, videoSrc]);
-
-    React.useEffect(() => {
-        var file = new File([videoSrc], "name.webm");
-        convertVideoFromWebmToMp4(file, (f) => {
-            console.log(f);
-        });
-    }, [videoSrc]);
 
     return (
         <div style={styles.mainTrimVideoWrapper}>
