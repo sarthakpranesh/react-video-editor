@@ -7,9 +7,13 @@ const TrimVideo = ({ videoSrc, setVideoSrc }) => {
     const inputRef = React.useRef();
     // eslint-disable-next-line no-unused-vars
     const [video, state, controls, ref] = useVideo(
-        <video style={styles.video} src="" autoPlay controls />
+        <video style={styles.video} src="" autoPlay controls loop />
     );
-    const [videoFile, setVideoFile] = React.useState(videoSrc ? new File([videoSrc], "video.webm", { type: "video/webm" }) : null);
+    let videoFileFromProp = null;
+    if (videoSrc) {
+        videoFileFromProp = new File([videoSrc], "video.webm", { type: "video/webm" })
+    }
+    const [videoFile, setVideoFile] = React.useState(videoFileFromProp);
     const [trim, setTrim] = React.useState({ start: 0, end: 0 });
     const [isTrimming, setIsTrimming] = React.useState(false);
 
@@ -30,24 +34,21 @@ const TrimVideo = ({ videoSrc, setVideoSrc }) => {
     }
 
     React.useEffect(() => {
-        if (inputRef === null) {
-            return;
-        }
         if (videoSrc === null) {
             inputRef.current.click();
+        } else {
+            ref.current.src = videoSrc;
         }
-    }, [inputRef, videoSrc]);
+    }, [ref, videoSrc])
 
     React.useEffect(() => {
-        if (!ref.current) {
-          return;
+        if (state.duration !== Infinity) {
+            setTrim({
+                start: 0,
+                end: Math.floor(state.duration),
+            })
         }
-        ref.current.src = videoSrc;
-        setTrim({
-          start: 0,
-          end: Math.floor(state.duration),
-        })
-    }, [ref, state.duration, videoSrc]);
+    }, [state.duration]);
 
     return (
         <div style={styles.mainTrimVideoWrapper}>

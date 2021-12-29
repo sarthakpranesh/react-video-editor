@@ -1,16 +1,22 @@
 import * as React from "react";
 import Webcam from "react-webcam";
 
+let clearId;
+
 const CreateVideo = ({ setVideoSrc }) => {
+    // references 
     const webcamRef = React.useRef(null);
     const mediaRecorderRef = React.useRef(null);
+    // component states
     const [capturing, setCapturing] = React.useState(false);
     const [recordedChunks, setRecordedChunks] = React.useState([]);
-    const [userFacingMode, setUserFacingMode] = React.useState(false);
+    const [userFacingMode, setUserFacingMode] = React.useState(true);
     const [time, setTime] = React.useState(0);
+    const [recordEndBlobOperationDone, setRecordEndBlobOperationDone] = React.useState(false);
   
     const handleStartCaptureClick = () => {
         setCapturing(true);
+        setRecordEndBlobOperationDone(false);
         mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
           mimeType: "video/webm"
         });
@@ -19,21 +25,19 @@ const CreateVideo = ({ setVideoSrc }) => {
           handleDataAvailable
         );
         mediaRecorderRef.current.start();
-        setInterval(() => {
-            setTime((t) => t + 1);
-        }, 1000);
     }
   
-    const handleDataAvailable = ({ data }) => {
+    const handleDataAvailable = (e) => {
+        const { data } = e;
         if (data.size > 0) {
-          setRecordedChunks((prev) => prev.concat(data));
+            setRecordedChunks((prev) => prev.concat(data));
+            if (e.currentTarget.state === "inactive") {
+                setRecordEndBlobOperationDone(true); // "dataavailable" blob event takes place after calling .stop() on media ref
+            }
         }
     }
   
-    const handleStopCaptureClick = () => {
-        clearInterval();
-        setTime(0);
-        mediaRecorderRef.current.stop();
+    const handleStopCaptureClick = React.useCallback(() => {
         if (recordedChunks.length) {
           const blob = new Blob(recordedChunks, {
             type: "video/webm"
@@ -41,8 +45,29 @@ const CreateVideo = ({ setVideoSrc }) => {
           const url = URL.createObjectURL(blob);
           setVideoSrc(url);
         }
-        setCapturing(false);
-    }
+    }, [recordedChunks, setVideoSrc]);
+
+    React.useEffect(() => {
+        if (capturing) {
+            clearId = setInterval(() => {
+                setTime((t) => t + 1);
+            }, 1000);
+        } else {
+            console.log("Interval cleared");
+            clearInterval(clearId);
+        }
+    }, [capturing]);
+
+    /**
+     * The mediaRecorderRef.current.stop() takes time to actually create the first "dataavailable" call
+     * if not called earlier. This cause the react to move ahead but recorderChunk to be empty for 
+     * short videos, this is a little hack around it
+     */
+    React.useEffect(() => {
+        if (!recordEndBlobOperationDone && recordedChunks.length > 0) {
+            handleStopCaptureClick();
+        }
+    }, [capturing, handleStopCaptureClick, recordEndBlobOperationDone, recordedChunks.length]);
 
     return (
         <>
@@ -50,7 +75,7 @@ const CreateVideo = ({ setVideoSrc }) => {
                 ref={webcamRef}
                 style={styles.mainVideoCreateWrapper}
                 videoConstraints={{
-                    facingMode: userFacingMode ? "user" : "enviornment", // "user" | "environment",
+                    facingMode: userFacingMode ? "user" : { exact: "enviornment" }, // "user" | "environment",
                     width: 900,
                     height: 1500,
                 }}
@@ -64,7 +89,9 @@ const CreateVideo = ({ setVideoSrc }) => {
                     }}
                     onClick={() => {
                         if (capturing) {
-                            handleStopCaptureClick()
+                            mediaRecorderRef.current.stop();
+                            setCapturing(false);
+                            setTime(0);
                         } else {
                             handleStartCaptureClick()
                         }
