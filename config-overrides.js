@@ -10,8 +10,8 @@ module.exports = {
       const config = configFunction(proxy, allowedHost);
       // Set loose allow origin header to prevent CORS issues
       config.headers = {
-        "Cross-Origin-Embedder-Policy": "require-corp",
-        "Cross-Origin-Opener-Policy": "same-origin",
+        // "Cross-Origin-Embedder-Policy": "require-corp",
+        // "Cross-Origin-Opener-Policy": "same-origin",
       };
       return config;
     };

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useVideo } from "react-use";
 
-import { trimVideo, trimVideoWithFfmpeg } from "../../services";
+import { trimVideo } from "../../services";
 
 const TrimVideo = ({ videoSrc, setVideoSrc }) => {
     const inputRef = React.useRef();
@@ -29,7 +29,6 @@ const TrimVideo = ({ videoSrc, setVideoSrc }) => {
     
     const onFileChange = async (e) => {
         const videoFile = e.target.files[0];
-        trimVideoWithFfmpeg(videoFile);
         setVideoFile(videoFile);
         setVideoSrc(URL.createObjectURL(videoFile));
     }
@@ -40,7 +39,7 @@ const TrimVideo = ({ videoSrc, setVideoSrc }) => {
         } else {
             ref.current.src = videoSrc;
         }
-    }, [ref, videoSrc])
+    }, [ref, videoFile, videoSrc])
 
     React.useEffect(() => {
         if (state.duration !== Infinity) {

@@ -1,10 +1,10 @@
 import FFMPEG from "react-ffmpeg";
-const { createFFmpeg } = window.FFmpeg;
 
-// const { createFFmpeg, fetchFile } = require('@ffmpeg/ffmpeg');
+const { createFFmpeg, fetchFile } = require('@ffmpeg/ffmpeg');
 
 const ffmpeg = createFFmpeg({
     log: true,
+    corePath: "/ffmpeg-core/ffmpeg-core.js",
 });
 
 export const convertVideoFromWebmToMp4 = async (file, callback) => {
@@ -34,11 +34,12 @@ export const trimVideo = async (file, start, end, callback) => {
     )
 }
 
-export const trimVideoWithFfmpeg = async (file) => {
+export const convertVideoWithFfmpeg = async (file) => {
+    console.log(file);
     await ffmpeg.load();
-    ffmpeg.FS('writeFile', 'test.avi', file);
-    await ffmpeg.run('-i', 'test.avi', 'test.mp4');
-    const raw = ffmpeg.FS('readFile', 'test.mp4');
+    ffmpeg.FS('writeFile', "video.webm", await fetchFile(file));
+    await ffmpeg.run('-i', 'video.webm', "video.mp4");
+    const raw = ffmpeg.FS('readFile', "video.mp4");
     console.log(raw);
     // process.exit(0);
 }
