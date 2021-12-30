@@ -26,7 +26,7 @@ const styles = {
     backgroundColor: "black",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-evenly",
+    justifyContent: "center",
     alignItems: "center",
   },
   typeButtons: {

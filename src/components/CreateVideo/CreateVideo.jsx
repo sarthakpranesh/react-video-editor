@@ -75,13 +75,15 @@ const CreateVideo = ({ setVideoSrc }) => {
                 ref={webcamRef}
                 style={styles.mainVideoCreateWrapper}
                 videoConstraints={{
-                    facingMode: userFacingMode ? "user" : { exact: "enviornment" }, // "user" | "environment",
-                    width: 900,
-                    height: 1500,
+                    facingMode: userFacingMode ? "user" : { exact: "environment" }, // "user" | "environment",
+                    width: { min: 640, ideal: 1920, max: 1920 },
+                    height: { min: 400, ideal: 1080 },
+                    aspectRatio: 1.777777778,
+                    frameRate: { max: 30 },
                 }}
             />
             <div style={styles.cameraMainControls}>
-                <div />
+                <div style={{ width: 40, }} />
                 <div 
                     style={{
                         ...styles.cameraMainButton,
@@ -99,9 +101,9 @@ const CreateVideo = ({ setVideoSrc }) => {
                 >
                     {capturing ? time : ""}
                 </div>
-                <div style={{ color: "white" }} onClick={() => setUserFacingMode(!userFacingMode)}>
+                <button onClick={() => setUserFacingMode(!userFacingMode)}>
                     Flip
-                </div>
+                </button>
             </div>
         </>
     );
@@ -113,6 +115,7 @@ const styles = {
         width: 300,
         border: "1px solid white",
         borderRadius: 8,
+        marginBottom: 20,
     },
     cameraMainControls: {
         width: 300,
