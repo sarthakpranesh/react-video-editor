@@ -2,32 +2,19 @@ import * as React from "react";
 import './App.css';
 
 // importing components
-import TrimVideo from "./components/TrimVideo/TrimVideo";
 import CreateVideo from "./components/CreateVideo/CreateVideo";
+import OverlayVIdeo from "./components/OverlayVIdeo/OverlayVIdeo";
 
 const App = () => {
-  const [type, setType] = React.useState(null); // type: null | "record" | "pick"
-  const [videoSrc, setVideoSrc] = React.useState(null);
-
-  if (type === null) {
-    return (
-      <div style={styles.mainDivAppWrapper}>
-        <div onClick={() => setType("record")} style={styles.typeButtons}>
-          Open Camera
-        </div>
-        <div onClick={() => setType("pick")} style={styles.typeButtons} >
-          Upload Video
-        </div>
-      </div>
-    )
-  }
+  const [type, setType] = React.useState("record"); // type: null | "record" | "overlay"
+  const [videoSrc, setVideoSrc] = React.useState("");
 
   return (
     <div style={styles.mainDivAppWrapper}>
       {type === "record" ?  <CreateVideo setVideoSrc={(src) => {
         setVideoSrc(src);
-        setType("pick")
-      }} /> : <TrimVideo videoSrc={videoSrc} setVideoSrc={setVideoSrc} />}
+        setType("overlay")
+      }} /> : <OverlayVIdeo videoSrc={videoSrc} setVideoSrc={setVideoSrc} />}
     </div>
   );
 }
