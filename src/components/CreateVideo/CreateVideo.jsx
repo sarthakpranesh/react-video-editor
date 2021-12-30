@@ -42,7 +42,6 @@ const CreateVideo = ({ setVideoSrc }) => {
           const blob = new Blob(recordedChunks, {
             type: "video/webm"
           });
-          const videoFile = new File([blob], "video.webm", {});
           const videoURL = URL.createObjectURL(blob);
           setVideoSrc(videoURL);
         }
