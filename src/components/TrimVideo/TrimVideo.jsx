@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useVideo } from "react-use";
 
-import { trimVideo } from "../../services";
+import { trimVideo, trimVideoWithFfmpeg } from "../../services";
 
 const TrimVideo = ({ videoSrc, setVideoSrc }) => {
     const inputRef = React.useRef();
@@ -29,6 +29,7 @@ const TrimVideo = ({ videoSrc, setVideoSrc }) => {
     
     const onFileChange = async (e) => {
         const videoFile = e.target.files[0];
+        trimVideoWithFfmpeg(videoFile);
         setVideoFile(videoFile);
         setVideoSrc(URL.createObjectURL(videoFile));
     }
