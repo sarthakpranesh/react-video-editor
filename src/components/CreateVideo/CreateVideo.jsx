@@ -1,6 +1,6 @@
 import * as React from "react";
 import Webcam from "react-webcam";
-import { convertVideoFromWebmToMp4 } from "../../services";
+import { convertVideoWithFfmpeg } from "../../services";
 
 let clearId;
 
@@ -43,7 +43,7 @@ const CreateVideo = ({ setVideoSrc }) => {
           const blob = new Blob(recordedChunks, {
             type: "video/webm"
           });
-          await convertVideoFromWebmToMp4(blob)
+          await convertVideoWithFfmpeg(blob)
           const url = URL.createObjectURL(blob);
           setVideoSrc(url);
         }
