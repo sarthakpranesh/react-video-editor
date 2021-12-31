@@ -10,6 +10,7 @@ const CreateVideo = ({ setVideoSrc }) => {
     // references 
     const webcamRef = React.useRef(null);
     const mediaRecorderRef = React.useRef(null);
+    const inputRef = React.useRef(null);
     // component states
     const [capturing, setCapturing] = React.useState(false);
     const [recordedChunks, setRecordedChunks] = React.useState([]);
@@ -87,7 +88,19 @@ const CreateVideo = ({ setVideoSrc }) => {
                 }}
             />
             <div style={styles.cameraMainControls}>
-                <IconButton>
+                <IconButton onClick={() => inputRef.current.click()}>
+                    <input
+                        ref={inputRef}
+                        type="file"
+                        accept="audio/*,video/*"
+                        onChange={(e) => {
+                            const videoFile = e.target.files[0];
+                            setVideoSrc(URL.createObjectURL(videoFile));
+                        }}
+                        style={{
+                            display: "none",
+                        }}
+                    />
                     <CollectionsIcon style={styles.cameraIconButtons} />
                 </IconButton>
                 <div 
