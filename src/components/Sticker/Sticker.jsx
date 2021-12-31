@@ -3,6 +3,15 @@ import Draggable from "react-draggable";
 
 const Sticker = ({ sticker, updateSticker }) => {
     const stickerRef = React.useRef(null);
+    const [overlayProp, setOverlayProp] = React.useState(0);
+
+    React.useEffect(() => {
+        const overlay = document.getElementById("stickers-overlay");
+        setOverlayProp({
+            width: overlay.offsetWidth,
+            height: overlay.offsetHeight,
+        });
+    }, [])
 
     return (
         <Draggable
@@ -17,7 +26,7 @@ const Sticker = ({ sticker, updateSticker }) => {
             onDrag={() => {}}
             onStop={(e, d) => {
                 const stickerWidth = stickerRef.current.offsetWidth;
-                if (d.x < -stickerWidth || d.x > 200 || d.y < 0 || d.y > 400) {
+                if (d.x < -stickerWidth || d.x > overlayProp.width || d.y < 0 || d.y > overlayProp.height) {
                     // remove the sticker
                     updateSticker(sticker, true);
                 } else {

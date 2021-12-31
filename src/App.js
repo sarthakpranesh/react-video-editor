@@ -13,8 +13,11 @@ const App = () => {
     <div style={styles.mainDivAppWrapper}>
       {type === "record" ?  <CreateVideo setVideoSrc={(src) => {
         setVideoSrc(src);
-        setType("overlay")
-      }} /> : <OverlayVIdeo videoSrc={videoSrc} setVideoSrc={setVideoSrc} />}
+        setType("overlay");
+      }} /> : <OverlayVIdeo videoSrc={videoSrc} setVideoSrc={(src) => {
+        setVideoSrc(src);
+        setType("record");
+      }} />}
     </div>
   );
 }

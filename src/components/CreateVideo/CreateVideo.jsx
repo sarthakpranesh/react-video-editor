@@ -47,6 +47,7 @@ const CreateVideo = ({ setVideoSrc }) => {
           });
           const videoURL = URL.createObjectURL(blob);
           setVideoSrc(videoURL);
+          setRecordedChunks([]);
         }
     }, [recordedChunks, setVideoSrc]);
 
