@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useVideo } from "react-use";
-import Draggable from "react-draggable";
+import Sticker from "../Sticker/Sticker";
 
 const OverlayVIdeo = ({ videoSrc, setVideoSrc }) => {
     // eslint-disable-next-line no-unused-vars
@@ -10,9 +10,18 @@ const OverlayVIdeo = ({ videoSrc, setVideoSrc }) => {
     const [stickerMessage, setStickerMessage] = React.useState("");
     const [stickerArray, setStickerArray] = React.useState([]);
 
-    React.useEffect(() => {
-        console.log(stickerArray);
-    }, [stickerArray])
+    const updateSticker = (sticker, isDeleted) => {
+        const { id } = sticker;
+        if (isDeleted) {
+            // remove sticker
+            const newStickerArray = stickerArray.filter((sticker) => sticker.id !== id);
+            setStickerArray(newStickerArray);
+            return;
+        }
+        const index = stickerArray.findIndex((sticker) => sticker.id === id);
+        const newStickerArray = [...stickerArray.slice(0, index), sticker, ...stickerArray.slice(index + 1)]
+        setStickerArray(newStickerArray);
+    }
 
     return (
         <div style={styles.mainTrimVideoWrapper}>
@@ -20,34 +29,12 @@ const OverlayVIdeo = ({ videoSrc, setVideoSrc }) => {
                 {video}
                 <div style={{ ...styles.video, ...styles.videoOverlay }}>
                     {
-                        stickerArray.map((sticker, i) => {
+                        stickerArray.map((sticker) => {
                             return (
-                                <Draggable
-                                    key={sticker.id}
-                                    axis="both"
-                                    handle=".handle"
-                                    defaultPosition={{x: sticker.x, y: sticker.y}}
-                                    position={null}
-                                    grid={[40, 40]}
-                                    scale={1}
-                                    onStart={() => {}}
-                                    onDrag={() => {}}
-                                    onStop={(e, d) => {
-                                        if (d.x < -50 || d.x > 200+50 || d.y < 0 || d.y > 400) {
-                                            // remove the sticker
-                                            const newStickerArray = [...stickerArray.slice(0, i), ...stickerArray.slice(i+1)]
-                                            setStickerArray(newStickerArray);
-                                        } else {
-                                            sticker.x = d.x;
-                                            sticker.y = d.y;
-                                            const newStickerArray = [...stickerArray.slice(0, i), sticker, ...stickerArray.slice(i+1)]
-                                            setStickerArray(newStickerArray);
-                                        }
-                                    }}>
-                                    <div style={styles.stickerWrapper} className="handle">
-                                        {sticker.message.trim()}
-                                    </div>
-                                </Draggable>
+                                <Sticker
+                                    sticker={sticker}
+                                    updateSticker={updateSticker}
+                                />
                             )
                         })
                     }
@@ -104,12 +91,6 @@ const styles = {
     subDivWrapper: {
       marginLeft: 20,
       alignItems: "flex-start",
-    },
-    stickerWrapper: {
-        padding: 4,
-        borderRadius: 4,
-        background: "pink",
-        display: "inline-block" 
     },
 };
 
