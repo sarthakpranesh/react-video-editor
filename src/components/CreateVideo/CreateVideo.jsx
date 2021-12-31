@@ -1,5 +1,8 @@
 import * as React from "react";
 import Webcam from "react-webcam";
+import { IconButton } from "@mui/material";
+import FlipCameraAndroidRoundedIcon from '@mui/icons-material/FlipCameraAndroidRounded';
+import CollectionsIcon from '@mui/icons-material/Collections';
 
 let clearId;
 
@@ -79,11 +82,13 @@ const CreateVideo = ({ setVideoSrc }) => {
                     width: { min: 640, ideal: 1920, max: 1920 },
                     height: { min: 400, ideal: 1080 },
                     aspectRatio: 1.777777778,
-                    frameRate: { max: 30 },
+                    frameRate: { max: 60 },
                 }}
             />
             <div style={styles.cameraMainControls}>
-                <div style={{ width: 40, }} />
+                <IconButton>
+                    <CollectionsIcon style={styles.cameraIconButtons} />
+                </IconButton>
                 <div 
                     style={{
                         ...styles.cameraMainButton,
@@ -101,9 +106,9 @@ const CreateVideo = ({ setVideoSrc }) => {
                 >
                     {capturing ? time : ""}
                 </div>
-                <button onClick={() => setUserFacingMode(!userFacingMode)}>
-                    Flip
-                </button>
+                <IconButton onClick={() => setUserFacingMode(!userFacingMode)}>
+                    <FlipCameraAndroidRoundedIcon style={styles.cameraIconButtons} />
+                </IconButton>
             </div>
         </>
     );
@@ -111,28 +116,35 @@ const CreateVideo = ({ setVideoSrc }) => {
 
 const styles = {
     mainVideoCreateWrapper: {
-        height: 500,
-        width: 300,
-        border: "1px solid white",
-        borderRadius: 8,
-        marginBottom: 20,
+        height: "100vh",
+        width: "100vw",
     },
     cameraMainControls: {
-        width: 300,
+        width: "100vw",
+        height: "140px",
+        position: "absolute",
+        bottom: 0,
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-evenly",
         alignItems: "center",
+        background: "rgba(0, 0, 0, 0.25)"
     },
     cameraMainButton: {
         width: 50,
         height: 50,
         border: "4px white solid",
-        borderRadius: 25,
+        borderRadius: 50,
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
+        color: "white",
+        fontWeight: "800",
+    },
+    cameraIconButtons: {
+        width: 40,
+        height: 40,
         color: "white",
     }
 };
